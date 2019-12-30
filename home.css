@@ -7,3 +7,10 @@
 .list-name-text {
   font-weight: bold;
 }
+
+.cardDiv {
+  padding: 0.25rem;
+  margin: 0.5rem 0;
+  border: 5px solid black;
+  border-radius: 10px;
+}
