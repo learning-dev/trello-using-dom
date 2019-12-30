@@ -9,7 +9,22 @@ const getCardsUrl = `https://api.trello.com/1/boards/5dce45086b307e7119c6b620/ca
 let listOfCards;
 
 function refreshDom() {
+  const mainDiv = document.getElementById('main-div');
+  listOfCards.forEach((entry) => {
+    console.log('name', entry['name']);
+    console.log('checkitem', entry['badges']['checkItems']);
+    console.log('checkedItems', entry['badges']['checkItemsChecked']);
+    const nameDiv = document.createElement('div');
+    const checkDiv = document.createElement('div');
+    nameDiv.appendChild(document.createTextNode(entry['name']));
+    checkDiv.appendChild(document.createTextNode(`${entry['badges']['checkItemsChecked']  }/${  entry['badges']['checkItems']}`));
+    const cardDiv = document.createElement('div');
+    cardDiv.setAttribute('class', 'cardDiv');
+    cardDiv.appendChild(nameDiv);
+    cardDiv.appendChild(checkDiv);
+    mainDiv.appendChild(cardDiv);
 
+  });
 }
 
 async function getRequest() {
