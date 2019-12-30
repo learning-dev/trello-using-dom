@@ -13,6 +13,11 @@ function refreshDom() {
   const mainDiv = document.getElementById('main-div');
   listCards.forEach((list) => {
     const listDiv = document.createElement('div');
+    const ptag = document.createElement('p');
+    const listname = document.createTextNode(list['name']);
+    ptag.appendChild(listname);
+    ptag.setAttribute('class', 'list-name-text');
+    listDiv.appendChild(ptag);
     listDiv.setAttribute('class', 'list-div');
     list['cards'].forEach((entry) => {
       const nameDiv = document.createElement('div');
