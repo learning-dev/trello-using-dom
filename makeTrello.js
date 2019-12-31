@@ -20,6 +20,7 @@ function refreshDom() {
     ptag.setAttribute('class', 'list-name-text');
     listDiv.appendChild(ptag);
     listDiv.setAttribute('class', 'list-div');
+    listDiv.setAttribute('list-id', list.id);
 
     list['cards'].forEach((entry) => {
       const nameDiv = document.createElement('div');
@@ -28,6 +29,7 @@ function refreshDom() {
       checkDiv.appendChild(document.createTextNode(`${entry.badges.checkItemsChecked}/${entry.badges.checkItems}`));
       const cardDiv = document.createElement('div');
       cardDiv.setAttribute('class', 'card-div');
+      cardDiv.setAttribute('card-id', entry.id);
       cardDiv.appendChild(nameDiv);
       cardDiv.appendChild(checkDiv);
       listDiv.appendChild(cardDiv);
@@ -44,6 +46,8 @@ function refreshDom() {
     FieldDiv.appendChild(saveBtn);
     FieldDiv.setAttribute('class', 'add-card');
     FieldDiv.classList.add('card-div');
+
+    // append to main div
     listDiv.appendChild(FieldDiv);
     mainDiv.appendChild(listDiv);
     mainDiv.setAttribute('class', 'container-div');
