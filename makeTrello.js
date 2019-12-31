@@ -7,10 +7,14 @@ const tokenSecret = storedTokenSecret;
 const getListsFromBoard = `https://api.trello.com/1/boards/5dce45086b307e7119c6b620/lists?cards=all&key=${apiKey}&token=${tokenSecret}`;
 
 let listCards;
-
+const containerDiv = document.getElementById('main-div');
 
 function refreshDom() {
-  const mainDiv = document.getElementById('main-div');
+  // delete previous data
+  while (containerDiv.firstChild) {
+    containerDiv.removeChild(containerDiv.firstChild);
+  }
+
   listCards.forEach((list) => {
     const listDiv = document.createElement('div');
     const ptag = document.createElement('p');
@@ -49,8 +53,8 @@ function refreshDom() {
 
     // append to main div
     listDiv.appendChild(FieldDiv);
-    mainDiv.appendChild(listDiv);
-    mainDiv.setAttribute('class', 'container-div');
+    containerDiv.appendChild(listDiv);
+    containerDiv.setAttribute('class', 'container-div');
   });
 }
 
@@ -65,5 +69,21 @@ async function getListsAndCards() {
   }
 }
 
+async function addNewCard(event) {
+  if (event.toElement.type === 'submit') {
+    const input = document.querySelector('input').value;
+    if (input.length > 0) {
+      const listId = event.target.parentElement.parentElement.getAttribute('list-id');
+      const Url = `https://api.trello.com/1/cards?idList=${listId}&name=${input}&key=${apiKey}&token=${tokenSecret}`;
+      const resp = await fetch(Url, { method: 'POST' });
+      if (resp.ok) {
+        getListsAndCards();
+      }
+    }
+  }
+}
 
 getListsAndCards();
+
+
+containerDiv.addEventListener('click', addNewCard);
