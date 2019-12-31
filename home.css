@@ -1,16 +1,23 @@
 .container-div {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .list-name-text {
   font-weight: bold;
 }
 
-.cardDiv {
+.card-div {
   padding: 0.25rem;
   margin: 0.5rem 0;
   border: 5px solid black;
   border-radius: 10px;
+}
+
+.add-card{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  
 }
