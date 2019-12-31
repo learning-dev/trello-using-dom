@@ -71,7 +71,7 @@ async function getListsAndCards() {
 
 async function addNewCard(event) {
   if (event.toElement.type === 'submit') {
-    const input = document.querySelector('input').value;
+    const input = event.target.previousElementSibling.value;
     if (input.length > 0) {
       const listId = event.target.parentElement.parentElement.getAttribute('list-id');
       const Url = `https://api.trello.com/1/cards?idList=${listId}&name=${input}&key=${apiKey}&token=${tokenSecret}`;

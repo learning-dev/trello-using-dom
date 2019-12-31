@@ -8,6 +8,10 @@
   font-weight: bold;
 }
 
+.list-div {
+  overflow: scroll;
+  max-height: 50rem;
+}
 .card-div {
   padding: 0.25rem;
   margin: 0.5rem 0;
@@ -18,6 +22,7 @@
 .add-card{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   
 }
+
