@@ -7,6 +7,8 @@ const boardId = '5dce45086b307e7119c6b620';
 const getListsFromBoard = `https://api.trello.com/1/boards/${boardId}/lists?cards=all&key=${apiKey}&token=${tokenSecret}`;
 
 let listCards;
+let listOfChecklist;
+let cardDetails;
 const containerDiv = document.getElementById('main-div');
 
 function refreshDom() {
@@ -66,6 +68,7 @@ function refreshDom() {
     containerDiv.setAttribute('class', 'container-div');
   });
 
+
   // add a new list div
   const addListBtnDiv = document.createElement('div');
   const buttonDiv = document.createElement('div');
@@ -83,6 +86,11 @@ function refreshDom() {
   buttonDiv.setAttribute('class', 'list-div');
   addListBtnDiv.setAttribute('class', 'card-div');
   containerDiv.appendChild(buttonDiv);
+}
+
+
+function refreshCardDOM() {
+  //
 }
 
 async function getListsAndCards() {
@@ -144,7 +152,6 @@ function addNewListField(event) {
 }
 
 async function addNewList(event) {
-  console.log('front', event);
   if (event.toElement.type === 'submit' && event.target.value === 'Add') {
     const input = event.target.previousElementSibling.value;
     if (input.length > 0) {
@@ -158,6 +165,35 @@ async function addNewList(event) {
   }
 }
 
+async function showCard(event) {
+  console.log('showcard', event);
+  const cardId = event.target.parentElement.getAttribute('card-id');
+  console.log(cardId);
+  const cardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
+  const checkListUrl = `https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=all&filter=all&fields=all&key=${apiKey}&token=${tokenSecret}`;
+
+  const cardResponse = await fetch(cardUrl);
+  const chkListResp = await fetch(checkListUrl);
+
+  if (cardResponse.ok) {
+    cardDetails = await cardResponse.json();
+    console.log('carddetails:', cardDetails);
+  } else {
+    throw new Error('Request Failed!');
+  }
+
+  if (chkListResp.ok) {
+    listOfChecklist = await chkListResp.json();
+    console.log('listofChecklist', listOfChecklist);
+  } else {
+    throw new Error('Checklist Request Failed!');
+  }
+
+  if (cardDetails !== undefined && chkListResp !== undefined) {
+    refreshCardDOM();
+  }
+}
+
 
 getListsAndCards();
 
@@ -166,3 +202,4 @@ containerDiv.addEventListener('click', addNewCard);
 containerDiv.addEventListener('click', deleteCard);
 containerDiv.addEventListener('click', addNewListField);
 containerDiv.addEventListener('click', addNewList);
+containerDiv.addEventListener('click', showCard);
