@@ -18,6 +18,8 @@
 .list-div {
   overflow: scroll;
   max-height: 50rem;
+  width: 17%;
+
 }
 .card-div {
   padding: 0.25rem;

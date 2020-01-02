@@ -18,7 +18,7 @@ function refreshDom() {
   listCards.forEach((list) => {
     const listDiv = document.createElement('div');
     const ptag = document.createElement('p');
-    const listname = document.createTextNode(list['name']);
+    const listname = document.createTextNode(list.name);
 
     ptag.appendChild(listname);
     ptag.setAttribute('class', 'list-name-text');
@@ -26,7 +26,7 @@ function refreshDom() {
     listDiv.setAttribute('class', 'list-div');
     listDiv.setAttribute('list-id', list.id);
 
-    list['cards'].forEach((entry) => {
+    list.cards.forEach((entry) => {
       const nameDiv = document.createElement('div');
       const delBtn = document.createElement('button');
       const delBtnDiv = document.createElement('div');
@@ -65,6 +65,24 @@ function refreshDom() {
     containerDiv.appendChild(listDiv);
     containerDiv.setAttribute('class', 'container-div');
   });
+
+  // add a new list div
+  const addListBtnDiv = document.createElement('div');
+  const buttonDiv = document.createElement('div');
+  const addListBtn = document.createElement('button');
+  const btnText = document.createTextNode('+ Add new List');
+  const ptagText = document.createTextNode('Option');
+  const ptagBtn = document.createElement('p');
+  ptagBtn.appendChild(ptagText);
+  ptagBtn.setAttribute('class', 'list-name-text');
+  addListBtn.appendChild(btnText);
+  addListBtnDiv.appendChild(addListBtn);
+  buttonDiv.appendChild(ptagBtn);
+
+  buttonDiv.appendChild(addListBtnDiv);
+  buttonDiv.setAttribute('class', 'list-div');
+  addListBtnDiv.setAttribute('class', 'card-div');
+  containerDiv.appendChild(buttonDiv);
 }
 
 async function getListsAndCards() {
@@ -93,7 +111,6 @@ async function addNewCard(event) {
 }
 
 async function deleteCard(event) {
-  console.log(event);
   if (event.target.innerText === 'X') {
     const cardId = event.target.parentElement.parentElement.parentElement.getAttribute('card-id');
     const deleteCardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
