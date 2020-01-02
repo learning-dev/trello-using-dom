@@ -28,13 +28,22 @@ function refreshDom() {
 
     list['cards'].forEach((entry) => {
       const nameDiv = document.createElement('div');
+      const delBtn = document.createElement('button');
+      const delBtnDiv = document.createElement('div');
       const checkDiv = document.createElement('div');
+      const titleDiv = document.createElement('div');
+      delBtn.appendChild(document.createTextNode('X'));
+      delBtnDiv.appendChild(delBtn);
+      delBtnDiv.setAttribute('class', 'del-card');
       nameDiv.appendChild(document.createTextNode(entry.name));
       checkDiv.appendChild(document.createTextNode(`${entry.badges.checkItemsChecked}/${entry.badges.checkItems}`));
+      titleDiv.appendChild(nameDiv);
+      titleDiv.appendChild(delBtnDiv);
+      titleDiv.setAttribute('class', 'title-div');
       const cardDiv = document.createElement('div');
       cardDiv.setAttribute('class', 'card-div');
       cardDiv.setAttribute('card-id', entry.id);
-      cardDiv.appendChild(nameDiv);
+      cardDiv.appendChild(titleDiv);
       cardDiv.appendChild(checkDiv);
       listDiv.appendChild(cardDiv);
     });
@@ -70,7 +79,7 @@ async function getListsAndCards() {
 }
 
 async function addNewCard(event) {
-  if (event.toElement.type === 'submit') {
+  if (event.toElement.type === 'submit' && event.target.innerHTML === '') {
     const input = event.target.previousElementSibling.value;
     if (input.length > 0) {
       const listId = event.target.parentElement.parentElement.getAttribute('list-id');
@@ -83,7 +92,20 @@ async function addNewCard(event) {
   }
 }
 
+async function deleteCard(event) {
+  console.log(event);
+  if (event.target.innerText === 'X') {
+    const cardId = event.target.parentElement.parentElement.parentElement.getAttribute('card-id');
+    const deleteCardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
+    const resp = await fetch(deleteCardUrl, { method: 'DELETE' });
+    if (resp.ok) {
+      getListsAndCards();
+    }
+  }
+}
+
 getListsAndCards();
 
 
 containerDiv.addEventListener('click', addNewCard);
+containerDiv.addEventListener('click', deleteCard);

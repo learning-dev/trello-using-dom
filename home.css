@@ -8,6 +8,13 @@
   font-weight: bold;
 }
 
+.title-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
 .list-div {
   overflow: scroll;
   max-height: 50rem;
