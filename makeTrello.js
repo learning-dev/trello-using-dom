@@ -129,12 +129,23 @@ function refreshCardDOM() {
     chklistDiv.appendChild(chklistItemsDiv);
     wholecheckList.appendChild(chklistDiv);
   });
-
+  const closeBtn = document.createElement('span');
+  closeBtn.setAttribute('class', 'close');
+  closeBtn.innerHTML = '&times;';
+  cardDetailsContainer.appendChild(closeBtn);
   cardDetailsContainer.appendChild(cardTitleDiv);
   cardDetailsContainer.appendChild(descriptionDiv);
   cardDetailsContainer.appendChild(wholecheckList);
   cardDetailsContainer.setAttribute('class', 'card-details-container');
-  containerDiv.appendChild(cardDetailsContainer);
+
+  const modal = document.createElement('div');
+  modal.setAttribute('class', 'modal');
+  modal.setAttribute('id', 'card-Modal');
+  modal.appendChild(cardDetailsContainer);
+  document.body.insertBefore(modal, containerDiv);
+
+  const mymodal = document.getElementById('card-Modal');
+  mymodal.style.display = 'block';
 }
 
 async function getListsAndCards() {
@@ -199,8 +210,8 @@ async function addNewList(event) {
   if (event.toElement.type === 'submit' && event.target.value === 'Add') {
     const input = event.target.previousElementSibling.value;
     if (input.length > 0) {
-      const Url = `https://api.trello.com/1/lists?name=${input}&idBoard=${boardId}&key=${apiKey}&token=${tokenSecret}`;
-      const resp = await fetch(Url, { method: 'POST' });
+      const url = `https://api.trello.com/1/lists?name=${input}&idBoard=${boardId}&key=${apiKey}&token=${tokenSecret}`;
+      const resp = await fetch(url, { method: 'POST' });
       if (resp.ok) {
         getListsAndCards();
         refreshDom();
@@ -238,6 +249,18 @@ async function showCard(event) {
   }
 }
 
+const closeBtn = document.querySelector('.close');
+const modal = document.querySelector('#card-modal');
+
+function outsideClick(event) {
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+}
 
 getListsAndCards();
 
@@ -247,3 +270,5 @@ containerDiv.addEventListener('click', deleteCard);
 containerDiv.addEventListener('click', addNewListField);
 containerDiv.addEventListener('click', addNewList);
 containerDiv.addEventListener('click', showCard);
+window.addEventListener('click', outsideClick);
+closeBtn.addEventListener('click', closeModal);
