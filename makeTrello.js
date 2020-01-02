@@ -3,8 +3,8 @@ import { storedApiKey, storedTokenSecret } from './keys.js';
 
 const apiKey = storedApiKey;
 const tokenSecret = storedTokenSecret;
-
-const getListsFromBoard = `https://api.trello.com/1/boards/5dce45086b307e7119c6b620/lists?cards=all&key=${apiKey}&token=${tokenSecret}`;
+const boardId = '5dce45086b307e7119c6b620';
+const getListsFromBoard = `https://api.trello.com/1/boards/${boardId}/lists?cards=all&key=${apiKey}&token=${tokenSecret}`;
 
 let listCards;
 const containerDiv = document.getElementById('main-div');
@@ -121,17 +121,18 @@ async function deleteCard(event) {
   }
 }
 
-
-async function addNewListField(event) {
+function addNewListField(event) {
   if (event.toElement.type === 'submit' && event.target.innerHTML === '+ Add new List') {
     console.log(event.target.parentElement);
     const listDiv = event.target.parentElement.parentElement;
     listDiv.removeChild(event.target.parentElement);
+
     // append the input field
     const FieldDiv = document.createElement('div');
     const textField = document.createElement('input');
     const saveBtn = document.createElement('input');
     saveBtn.setAttribute('type', 'submit');
+    saveBtn.value = 'Add';
     textField.setAttribute('type', 'text');
     textField.setAttribute('placeholder', 'New List name');
     FieldDiv.appendChild(textField);
@@ -142,9 +143,26 @@ async function addNewListField(event) {
   }
 }
 
+async function addNewList(event) {
+  console.log('front', event);
+  if (event.toElement.type === 'submit' && event.target.value === 'Add') {
+    const input = event.target.previousElementSibling.value;
+    if (input.length > 0) {
+      const Url = `https://api.trello.com/1/lists?name=${input}&idBoard=${boardId}&key=${apiKey}&token=${tokenSecret}`;
+      const resp = await fetch(Url, { method: 'POST' });
+      if (resp.ok) {
+        getListsAndCards();
+        refreshDom();
+      }
+    }
+  }
+}
+
+
 getListsAndCards();
 
 
 containerDiv.addEventListener('click', addNewCard);
 containerDiv.addEventListener('click', deleteCard);
 containerDiv.addEventListener('click', addNewListField);
+containerDiv.addEventListener('click', addNewList);
