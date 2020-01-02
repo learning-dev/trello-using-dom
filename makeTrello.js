@@ -90,7 +90,51 @@ function refreshDom() {
 
 
 function refreshCardDOM() {
-  //
+  const cardDetailsContainer = document.createElement('div');
+  const cardTitleDiv = document.createElement('div');
+  const descriptionDiv = document.createElement('div');
+  const wholecheckList = document.createElement('div');
+
+  const ptagCardTitle = document.createElement('p');
+  const ptagDesc = document.createElement('p');
+  ptagCardTitle.appendChild(document.createTextNode(cardDetails['name']));
+  cardTitleDiv.appendChild(ptagCardTitle);
+  ptagDesc.appendChild(document.createTextNode(cardDetails['desc']));
+  descriptionDiv.appendChild(ptagDesc);
+
+  listOfChecklist.forEach((checkList) => {
+    const chklistDiv = document.createElement('div');
+    const chklistTitleDiv = document.createElement('div');
+    const ptagTitle = document.createElement('p');
+    ptagTitle.appendChild(document.createTextNode(checkList['name']));
+    chklistTitleDiv.appendChild(ptagTitle);
+    chklistDiv.appendChild(chklistTitleDiv);
+    const chklistItemsDiv = document.createElement('div');
+    const chklistItems = document.createElement('form');
+
+    checkList['checkItems'].forEach((listItem) => {
+      const item = document.createElement('input');
+      const itemContainer = document.createElement('div');
+      item.setAttribute('type', 'checkbox');
+      if (listItem['state'] === 'complete') {
+        item.setAttribute('checked', true);
+      }
+      const label = document.createElement('label');
+      label.appendChild(document.createTextNode(listItem['name']));
+      itemContainer.appendChild(item);
+      itemContainer.appendChild(label);
+      chklistItems.appendChild(itemContainer);
+    });
+    chklistItemsDiv.appendChild(chklistItems);
+    chklistDiv.appendChild(chklistItemsDiv);
+    wholecheckList.appendChild(chklistDiv);
+  });
+
+  cardDetailsContainer.appendChild(cardTitleDiv);
+  cardDetailsContainer.appendChild(descriptionDiv);
+  cardDetailsContainer.appendChild(wholecheckList);
+  cardDetailsContainer.setAttribute('class', 'card-details-container');
+  containerDiv.appendChild(cardDetailsContainer);
 }
 
 async function getListsAndCards() {

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  z-index: 0;
 }
 
 .list-name-text {
@@ -35,3 +36,9 @@
   
 }
 
+.card-details-container {
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+
+}
