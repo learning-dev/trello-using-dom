@@ -121,8 +121,30 @@ async function deleteCard(event) {
   }
 }
 
+
+async function addNewListField(event) {
+  if (event.toElement.type === 'submit' && event.target.innerHTML === '+ Add new List') {
+    console.log(event.target.parentElement);
+    const listDiv = event.target.parentElement.parentElement;
+    listDiv.removeChild(event.target.parentElement);
+    // append the input field
+    const FieldDiv = document.createElement('div');
+    const textField = document.createElement('input');
+    const saveBtn = document.createElement('input');
+    saveBtn.setAttribute('type', 'submit');
+    textField.setAttribute('type', 'text');
+    textField.setAttribute('placeholder', 'New List name');
+    FieldDiv.appendChild(textField);
+    FieldDiv.appendChild(saveBtn);
+    FieldDiv.setAttribute('class', 'add-card');
+    FieldDiv.classList.add('card-div');
+    listDiv.appendChild(FieldDiv);
+  }
+}
+
 getListsAndCards();
 
 
 containerDiv.addEventListener('click', addNewCard);
 containerDiv.addEventListener('click', deleteCard);
+containerDiv.addEventListener('click', addNewListField);
