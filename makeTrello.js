@@ -192,6 +192,8 @@ function refreshCardDOM() {
   mymodal.addEventListener('click', deleteChecklist);
   mymodal.addEventListener('click', addNewCheckItemField);
   mymodal.addEventListener('click', addNewCheckItem);
+  mymodal.addEventListener('click', addNewCheckListField);
+  mymodal.addEventListener('click', addNewCheckList);
 }
 
 async function getListsAndCards() {
@@ -252,7 +254,6 @@ function addNewListField(event) {
 }
 
 function addNewCheckItemField(event) {
-  console.log('checklist new', event);
   if (event.toElement.type === 'submit' && event.target.innerHTML === 'Add Checklist Item') {
     const checklistDiv = event.target.parentElement.parentElement;
     checklistDiv.removeChild(event.target.parentElement);
@@ -272,6 +273,26 @@ function addNewCheckItemField(event) {
   }
 }
 
+function addNewCheckListField(event) {
+  if (event.toElement.type === 'submit' && event.target.innerHTML === 'Add Checklist') {
+    const checklistDiv = event.target.parentElement.parentElement;
+    checklistDiv.removeChild(event.target.parentElement);
+
+    // append the input field
+    const FieldDiv = document.createElement('div');
+    const textField = document.createElement('input');
+    const saveBtn = document.createElement('input');
+    saveBtn.setAttribute('type', 'submit');
+    saveBtn.value = 'Add CheckList';
+    textField.setAttribute('type', 'text');
+    textField.setAttribute('placeholder', 'CheckList Name');
+    FieldDiv.appendChild(textField);
+    FieldDiv.appendChild(saveBtn);
+    FieldDiv.setAttribute('class', 'add-checklist-item');
+    checklistDiv.appendChild(FieldDiv);
+  }
+}
+
 async function addNewCheckItem(event) {
   if (event.toElement.type === 'submit' && event.target.value === 'Add Item') {
     const input = event.target.previousElementSibling.value;
@@ -281,11 +302,29 @@ async function addNewCheckItem(event) {
       const url = `https://api.trello.com/1/checklists/${checklistId}/checkItems?name=${input}&pos=bottom&checked=false&key=${apiKey}&token=${tokenSecret}`;
       const resp = await fetch(url, { method: 'POST' });
       if (resp.ok) {
-        triggerModel(cardId)
+        triggerModel(cardId);
       }
     }
   }
 }
+
+
+async function addNewCheckList(event) {
+  if (event.toElement.type === 'submit' && event.target.value === 'Add CheckList') {
+    const input = event.target.previousElementSibling.value;
+    const cardId = event.target.parentElement.previousElementSibling.firstChild.getAttribute('card-id');
+
+    if (input.length > 0) {
+      const url = `https://api.trello.com/1/checklists?idCard=${cardId}&name=${input}&key=${apiKey}&token=${tokenSecret}`;
+      const resp = await fetch(url, { method: 'POST' });
+      if (resp.ok) {
+        triggerModel(cardId);
+      }
+    }
+  }
+}
+
+
 async function addNewList(event) {
   if (event.toElement.type === 'submit' && event.target.value === 'Add') {
     const input = event.target.previousElementSibling.value;
@@ -299,6 +338,8 @@ async function addNewList(event) {
     }
   }
 }
+
+
 async function fetchCardDetails(cardId) {
   const cardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
   const checkListUrl = `https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=all&filter=all&fields=all&key=${apiKey}&token=${tokenSecret}`;
@@ -321,6 +362,8 @@ async function fetchCardDetails(cardId) {
     refreshCardDOM();
   }
 }
+
+
 async function showCard(event) {
   const cardId = event.target.parentElement.getAttribute('card-id');
   fetchCardDetails(cardId);
@@ -328,7 +371,6 @@ async function showCard(event) {
 
 
 async function triggerModel(cardId) {
-  console.log('inside trigger model');
   const checklist = document.getElementById("card-modal");
 
   // remove the card div
@@ -341,7 +383,6 @@ async function deleteChecklist(event) {
   if (event.target.innerText === 'Delete Checklist') {
     const checklistId = event.target.parentElement.parentElement.getAttribute('checklist-id');
     const cardId = event.target.parentElement.parentElement.getAttribute('card-id');
-    console.log(checklistId);
     const deleteChecklistUrl = `https://api.trello.com/1/checklists/${checklistId}?key=${apiKey}&token=${tokenSecret}`;
 
     const resp = await fetch(deleteChecklistUrl, { method: 'DELETE' });
