@@ -132,6 +132,7 @@ function refreshCardDOM() {
       }
       itemContainer.appendChild(item);
       itemContainer.appendChild(label);
+      itemContainer.setAttribute('class', 'checklist-item');
       chklistItems.appendChild(itemContainer);
     });
     const btnDelChecklist = document.createElement('button');
