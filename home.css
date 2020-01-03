@@ -93,4 +93,13 @@
 } 
 .add-checklis-btn {
   float: right;
+  font-weight: bold;
+  font-size: small;
 }
+
+.btn-del-add {
+  margin: 10px;
+  font-weight: bold;
+  font-size: small;
+}
+

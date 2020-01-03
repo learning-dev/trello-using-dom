@@ -134,9 +134,23 @@ function refreshCardDOM() {
       itemContainer.appendChild(label);
       chklistItems.appendChild(itemContainer);
     });
+    const btnDelChecklist = document.createElement('button');
+    const addCheckListItemBtn = document.createElement('button');
+    const btnTextChecklist = document.createTextNode('Add Checklist Item');
+    const delChecklistText = document.createTextNode('Delete Checklist');
+    const btnDiv = document.createElement('div');
+
+    btnDelChecklist.appendChild(delChecklistText);
+    addCheckListItemBtn.appendChild(btnTextChecklist);
+    btnDiv.appendChild(addCheckListItemBtn);
+    btnDiv.appendChild(btnDelChecklist);
+    btnDelChecklist.setAttribute('class', 'btn-del-add');
+    addCheckListItemBtn.setAttribute('class', 'btn-del-add');
+
     chklistItemsDiv.setAttribute('class', 'checklist-items');
     chklistItemsDiv.appendChild(chklistItems);
     chklistDiv.appendChild(chklistItemsDiv);
+    chklistDiv.appendChild(btnDiv);
     wholecheckList.appendChild(chklistDiv);
   });
   const addChecklistBtn = document.createElement('button');
