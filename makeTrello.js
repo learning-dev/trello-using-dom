@@ -190,6 +190,8 @@ function refreshCardDOM() {
   mymodal.style.display = 'block';
   closeBtn.addEventListener('click', close);
   mymodal.addEventListener('click', deleteChecklist);
+  mymodal.addEventListener('click', addNewCheckItemField);
+  mymodal.addEventListener('click', addNewCheckItem);
 }
 
 async function getListsAndCards() {
@@ -249,6 +251,41 @@ function addNewListField(event) {
   }
 }
 
+function addNewCheckItemField(event) {
+  console.log('checklist new', event);
+  if (event.toElement.type === 'submit' && event.target.innerHTML === 'Add Checklist Item') {
+    const checklistDiv = event.target.parentElement.parentElement;
+    checklistDiv.removeChild(event.target.parentElement);
+
+    // append the input field
+    const FieldDiv = document.createElement('div');
+    const textField = document.createElement('input');
+    const saveBtn = document.createElement('input');
+    saveBtn.setAttribute('type', 'submit');
+    saveBtn.value = 'Add Item';
+    textField.setAttribute('type', 'text');
+    textField.setAttribute('placeholder', 'CheckItem');
+    FieldDiv.appendChild(textField);
+    FieldDiv.appendChild(saveBtn);
+    FieldDiv.setAttribute('class', 'add-checklist-item');
+    checklistDiv.appendChild(FieldDiv);
+  }
+}
+
+async function addNewCheckItem(event) {
+  if (event.toElement.type === 'submit' && event.target.value === 'Add Item') {
+    const input = event.target.previousElementSibling.value;
+    const checklistId = event.target.parentElement.parentElement.getAttribute('checklist-id');
+    const cardId = event.target.parentElement.parentElement.getAttribute('card-id');
+    if (input.length > 0) {
+      const url = `https://api.trello.com/1/checklists/${checklistId}/checkItems?name=${input}&pos=bottom&checked=false&key=${apiKey}&token=${tokenSecret}`;
+      const resp = await fetch(url, { method: 'POST' });
+      if (resp.ok) {
+        triggerModel(cardId)
+      }
+    }
+  }
+}
 async function addNewList(event) {
   if (event.toElement.type === 'submit' && event.target.value === 'Add') {
     const input = event.target.previousElementSibling.value;
@@ -301,7 +338,6 @@ async function triggerModel(cardId) {
 }
 
 async function deleteChecklist(event) {
-  console.log('delete checklist', event);
   if (event.target.innerText === 'Delete Checklist') {
     const checklistId = event.target.parentElement.parentElement.getAttribute('checklist-id');
     const cardId = event.target.parentElement.parentElement.getAttribute('card-id');

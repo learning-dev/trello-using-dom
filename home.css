@@ -110,3 +110,13 @@
   padding: 10px;
 }
 
+.add-checklist-item {
+  margin: 10px;
+  font: normal 18px/14px Helvetica;
+}
+
+.add-checklist-item > input {
+  margin: 10px;
+  font: normal 18px/14px Helvetica;
+}
+
