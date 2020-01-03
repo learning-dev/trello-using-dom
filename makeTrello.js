@@ -140,12 +140,13 @@ function refreshCardDOM() {
 
   const modal = document.createElement('div');
   modal.setAttribute('class', 'modal');
-  modal.setAttribute('id', 'card-Modal');
+  modal.setAttribute('id', 'card-modal');
   modal.appendChild(cardDetailsContainer);
-  document.body.insertBefore(modal, containerDiv);
+  document.body.appendChild(modal);
 
-  const mymodal = document.getElementById('card-Modal');
+  const mymodal = document.getElementById('card-modal');
   mymodal.style.display = 'block';
+  closeBtn.addEventListener('click', close);
 }
 
 async function getListsAndCards() {
@@ -186,7 +187,6 @@ async function deleteCard(event) {
 
 function addNewListField(event) {
   if (event.toElement.type === 'submit' && event.target.innerHTML === '+ Add new List') {
-    console.log(event.target.parentElement);
     const listDiv = event.target.parentElement.parentElement;
     listDiv.removeChild(event.target.parentElement);
 
@@ -221,25 +221,20 @@ async function addNewList(event) {
 }
 
 async function showCard(event) {
-  console.log('showcard', event);
   const cardId = event.target.parentElement.getAttribute('card-id');
-  console.log(cardId);
   const cardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
   const checkListUrl = `https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=all&filter=all&fields=all&key=${apiKey}&token=${tokenSecret}`;
 
   const cardResponse = await fetch(cardUrl);
   const chkListResp = await fetch(checkListUrl);
-
   if (cardResponse.ok) {
     cardDetails = await cardResponse.json();
-    console.log('carddetails:', cardDetails);
   } else {
     throw new Error('Request Failed!');
   }
 
   if (chkListResp.ok) {
     listOfChecklist = await chkListResp.json();
-    console.log('listofChecklist', listOfChecklist);
   } else {
     throw new Error('Checklist Request Failed!');
   }
@@ -249,17 +244,24 @@ async function showCard(event) {
   }
 }
 
-const closeBtn = document.querySelector('.close');
-const modal = document.querySelector('#card-modal');
+function close() {
+  const checklist = document.getElementById("card-modal");
+  checklist.style.display = "none";
 
-function outsideClick(event) {
-  if (event.target === modal) {
-    modal.style.display = 'none';
-  }
+  // remove the card div
+  const parent = checklist.parentElement;
+  parent.removeChild(checklist);
 }
 
-function closeModal() {
-  modal.style.display = 'none';
+window.onclick = function (event) {
+  const checklist = document.getElementById("card-modal");
+  if (event.target == checklist) {
+    checklist.style.display = 'none';
+
+    // remove the card div
+    const parent = checklist.parentElement;
+    parent.removeChild(checklist);
+  }
 }
 
 getListsAndCards();
@@ -270,5 +272,3 @@ containerDiv.addEventListener('click', deleteCard);
 containerDiv.addEventListener('click', addNewListField);
 containerDiv.addEventListener('click', addNewList);
 containerDiv.addEventListener('click', showCard);
-window.addEventListener('click', outsideClick);
-closeBtn.addEventListener('click', closeModal);
