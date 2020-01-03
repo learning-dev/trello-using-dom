@@ -136,6 +136,7 @@ function refreshCardDOM() {
       itemContainer.appendChild(label);
       itemContainer.setAttribute('class', 'checklist-item');
       itemContainer.setAttribute('checkitem-id', listItem['id']);
+      itemContainer.setAttribute('card-id', cardDetails['id']);
       chklistItems.appendChild(itemContainer);
     });
     const btnDelChecklist = document.createElement('button');
@@ -159,7 +160,7 @@ function refreshCardDOM() {
 
     chklistDiv.setAttribute('class', 'checklist');
     chklistDiv.setAttribute('checklist-id', checkList['id']);
-
+    chklistDiv.setAttribute('card-id', cardDetails['id']);
     wholecheckList.appendChild(chklistDiv);
   });
   const addChecklistBtn = document.createElement('button');
@@ -188,6 +189,7 @@ function refreshCardDOM() {
   const mymodal = document.getElementById('card-modal');
   mymodal.style.display = 'block';
   closeBtn.addEventListener('click', close);
+  mymodal.addEventListener('click', deleteChecklist);
 }
 
 async function getListsAndCards() {
@@ -260,9 +262,7 @@ async function addNewList(event) {
     }
   }
 }
-
-async function showCard(event) {
-  const cardId = event.target.parentElement.getAttribute('card-id');
+async function fetchCardDetails(cardId) {
   const cardUrl = `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${tokenSecret}`;
   const checkListUrl = `https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=all&filter=all&fields=all&key=${apiKey}&token=${tokenSecret}`;
 
@@ -282,6 +282,36 @@ async function showCard(event) {
 
   if (cardDetails !== undefined && chkListResp !== undefined) {
     refreshCardDOM();
+  }
+}
+async function showCard(event) {
+  const cardId = event.target.parentElement.getAttribute('card-id');
+  fetchCardDetails(cardId);
+}
+
+
+async function triggerModel(cardId) {
+  console.log('inside trigger model');
+  const checklist = document.getElementById("card-modal");
+
+  // remove the card div
+  const parent = checklist.parentElement;
+  parent.removeChild(checklist);
+  fetchCardDetails(cardId);
+}
+
+async function deleteChecklist(event) {
+  console.log('delete checklist', event);
+  if (event.target.innerText === 'Delete Checklist') {
+    const checklistId = event.target.parentElement.parentElement.getAttribute('checklist-id');
+    const cardId = event.target.parentElement.parentElement.getAttribute('card-id');
+    console.log(checklistId);
+    const deleteChecklistUrl = `https://api.trello.com/1/checklists/${checklistId}?key=${apiKey}&token=${tokenSecret}`;
+
+    const resp = await fetch(deleteChecklistUrl, { method: 'DELETE' });
+    if (resp.ok) {
+      triggerModel(cardId);
+    }
   }
 }
 
@@ -313,3 +343,4 @@ containerDiv.addEventListener('click', deleteCard);
 containerDiv.addEventListener('click', addNewListField);
 containerDiv.addEventListener('click', addNewList);
 containerDiv.addEventListener('click', showCard);
+
