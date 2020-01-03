@@ -43,6 +43,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 60%;
+  height: auto  ;
 
 }
 
@@ -71,4 +72,25 @@
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+.card-title-div {
+  font: bold 24px/30px Helvetica;
+}
+
+.checklist-title {
+  font: bold 18px/14px Helvetica;
+}
+
+.checklist-items {
+  font: normal 18px/14px Helvetica; 
+  
+}
+
+.checklist-item-sub-container {
+  display: flex;
+  flex-direction: column;
+} 
+.add-checklis-btn {
+  float: right;
 }

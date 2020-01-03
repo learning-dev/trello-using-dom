@@ -99,8 +99,10 @@ function refreshCardDOM() {
   const ptagDesc = document.createElement('p');
   ptagCardTitle.appendChild(document.createTextNode(cardDetails['name']));
   cardTitleDiv.appendChild(ptagCardTitle);
+  cardTitleDiv.setAttribute('class', 'card-title-div');
   ptagDesc.appendChild(document.createTextNode(cardDetails['desc']));
   descriptionDiv.appendChild(ptagDesc);
+  descriptionDiv.setAttribute('class', 'desc-container');
 
   listOfChecklist.forEach((checkList) => {
     const chklistDiv = document.createElement('div');
@@ -108,33 +110,48 @@ function refreshCardDOM() {
     const ptagTitle = document.createElement('p');
     ptagTitle.appendChild(document.createTextNode(checkList['name']));
     chklistTitleDiv.appendChild(ptagTitle);
+    chklistTitleDiv.setAttribute('class', 'checklist-title');
     chklistDiv.appendChild(chklistTitleDiv);
     const chklistItemsDiv = document.createElement('div');
     const chklistItems = document.createElement('form');
+    chklistItems.setAttribute('class', 'checklist-item-sub-container');
 
     checkList['checkItems'].forEach((listItem) => {
       const item = document.createElement('input');
       const itemContainer = document.createElement('div');
+      const label = document.createElement('label');
       item.setAttribute('type', 'checkbox');
       if (listItem['state'] === 'complete') {
         item.setAttribute('checked', true);
+        const strikethrough = document.createElement('s');
+        const text = document.createTextNode(listItem['name']);
+        strikethrough.appendChild(text);
+        label.appendChild(strikethrough);
+      } else {
+        label.appendChild(document.createTextNode(listItem['name']));
       }
-      const label = document.createElement('label');
-      label.appendChild(document.createTextNode(listItem['name']));
       itemContainer.appendChild(item);
       itemContainer.appendChild(label);
       chklistItems.appendChild(itemContainer);
     });
+    chklistItemsDiv.setAttribute('class', 'checklist-items');
     chklistItemsDiv.appendChild(chklistItems);
     chklistDiv.appendChild(chklistItemsDiv);
     wholecheckList.appendChild(chklistDiv);
   });
+  const addChecklistBtn = document.createElement('button');
+  const btnText = document.createTextNode('Add Checklist');
+  const btnChklistDiv = document.createElement('div');
+  addChecklistBtn.appendChild(btnText);
+  addChecklistBtn.setAttribute('class', 'add-checklis-btn');
+  btnChklistDiv.appendChild(addChecklistBtn);
   const closeBtn = document.createElement('span');
   closeBtn.setAttribute('class', 'close');
   closeBtn.innerHTML = '&times;';
   cardDetailsContainer.appendChild(closeBtn);
   cardDetailsContainer.appendChild(cardTitleDiv);
   cardDetailsContainer.appendChild(descriptionDiv);
+  cardDetailsContainer.appendChild(btnChklistDiv);
   cardDetailsContainer.appendChild(wholecheckList);
   cardDetailsContainer.setAttribute('class', 'card-details-container');
 
