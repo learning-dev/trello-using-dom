@@ -94,12 +94,14 @@ function refreshCardDOM() {
   const cardTitleDiv = document.createElement('div');
   const descriptionDiv = document.createElement('div');
   const wholecheckList = document.createElement('div');
+  wholecheckList.setAttribute('class', 'container-checklists');
 
   const ptagCardTitle = document.createElement('p');
   const ptagDesc = document.createElement('p');
   ptagCardTitle.appendChild(document.createTextNode(cardDetails['name']));
   cardTitleDiv.appendChild(ptagCardTitle);
   cardTitleDiv.setAttribute('class', 'card-title-div');
+  cardTitleDiv.setAttribute('card-id', cardDetails['id']);
   ptagDesc.appendChild(document.createTextNode(cardDetails['desc']));
   descriptionDiv.appendChild(ptagDesc);
   descriptionDiv.setAttribute('class', 'desc-container');
@@ -133,6 +135,7 @@ function refreshCardDOM() {
       itemContainer.appendChild(item);
       itemContainer.appendChild(label);
       itemContainer.setAttribute('class', 'checklist-item');
+      itemContainer.setAttribute('checkitem-id', listItem['id']);
       chklistItems.appendChild(itemContainer);
     });
     const btnDelChecklist = document.createElement('button');
@@ -145,6 +148,7 @@ function refreshCardDOM() {
     addCheckListItemBtn.appendChild(btnTextChecklist);
     btnDiv.appendChild(addCheckListItemBtn);
     btnDiv.appendChild(btnDelChecklist);
+    btnDiv.setAttribute('class', 'btn-container');
     btnDelChecklist.setAttribute('class', 'btn-del-add');
     addCheckListItemBtn.setAttribute('class', 'btn-del-add');
 
@@ -152,13 +156,18 @@ function refreshCardDOM() {
     chklistItemsDiv.appendChild(chklistItems);
     chklistDiv.appendChild(chklistItemsDiv);
     chklistDiv.appendChild(btnDiv);
+
+    chklistDiv.setAttribute('class', 'checklist');
+    chklistDiv.setAttribute('checklist-id', checkList['id']);
+
     wholecheckList.appendChild(chklistDiv);
   });
   const addChecklistBtn = document.createElement('button');
   const btnText = document.createTextNode('Add Checklist');
   const btnChklistDiv = document.createElement('div');
   addChecklistBtn.appendChild(btnText);
-  addChecklistBtn.setAttribute('class', 'add-checklis-btn');
+  addChecklistBtn.setAttribute('class', 'add-checklist-btn');
+  btnChklistDiv.setAttribute('class', 'div-add-checklist-btn');
   btnChklistDiv.appendChild(addChecklistBtn);
   const closeBtn = document.createElement('span');
   closeBtn.setAttribute('class', 'close');
