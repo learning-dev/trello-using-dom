@@ -18,7 +18,7 @@ function refreshDom() {
   }
 
   listCards.forEach((list) => {
-    const listDiv = document.createElement('div');
+    const listDiv = document.createElement('div');  
     const ptag = document.createElement('p');
     const listname = document.createTextNode(list.name);
 
@@ -90,6 +90,13 @@ function refreshDom() {
 
 
 function refreshCardDOM() {
+  const previousChecklist = document.getElementById("card-modal");
+  if (previousChecklist !== null) {
+    const parent = previousChecklist.parentElement;
+    parent.removeChild(previousChecklist);
+  }
+
+
   const cardDetailsContainer = document.createElement('div');
   const cardTitleDiv = document.createElement('div');
   const descriptionDiv = document.createElement('div');
@@ -116,6 +123,7 @@ function refreshCardDOM() {
     chklistDiv.appendChild(chklistTitleDiv);
     const chklistItemsDiv = document.createElement('div');
     const chklistItems = document.createElement('form');
+    chklistItems.setAttribute('id', 'checklist-item-box');
     chklistItems.setAttribute('class', 'checklist-item-sub-container');
 
     checkList['checkItems'].forEach((listItem) => {
@@ -187,6 +195,7 @@ function refreshCardDOM() {
   document.body.appendChild(modal);
 
   const mymodal = document.getElementById('card-modal');
+  const chklistItems = document.getElementById('checklist-item-box');
   mymodal.style.display = 'block';
   closeBtn.addEventListener('click', close);
   mymodal.addEventListener('click', deleteChecklist);
@@ -194,6 +203,8 @@ function refreshCardDOM() {
   mymodal.addEventListener('click', addNewCheckItem);
   mymodal.addEventListener('click', addNewCheckListField);
   mymodal.addEventListener('click', addNewCheckList);
+  chklistItems.addEventListener('click', strikeItem );
+
 }
 
 async function getListsAndCards() {
@@ -229,6 +240,28 @@ async function deleteCard(event) {
     if (resp.ok) {
       getListsAndCards();
     }
+  }
+}
+
+
+async function strikeItem(event) {
+  event.preventDefault();
+
+
+  const cardId = event.target.parentElement.getAttribute('card-id');
+  const checkItemId = event.target.parentElement.getAttribute('checkitem-id');
+  let state;
+
+  if (event.target.checked === false) {
+    state = 'incomplete';
+  } else if (event.target.checked === true) {
+    state = 'complete';
+  }
+  const UpdateCheckItemUrl = `https://api.trello.com/1/cards/${cardId}/checkItem/${checkItemId}?state=${state}&key=${apiKey}&token=${tokenSecret}`;
+
+  const resp = await fetch(UpdateCheckItemUrl, { method: 'PUT' });
+  if (resp.ok) {
+    fetchCardDetails(cardId);
   }
 }
 
@@ -302,7 +335,7 @@ async function addNewCheckItem(event) {
       const url = `https://api.trello.com/1/checklists/${checklistId}/checkItems?name=${input}&pos=bottom&checked=false&key=${apiKey}&token=${tokenSecret}`;
       const resp = await fetch(url, { method: 'POST' });
       if (resp.ok) {
-        triggerModel(cardId);
+        fetchCardDetails(cardId);
       }
     }
   }
@@ -318,7 +351,7 @@ async function addNewCheckList(event) {
       const url = `https://api.trello.com/1/checklists?idCard=${cardId}&name=${input}&key=${apiKey}&token=${tokenSecret}`;
       const resp = await fetch(url, { method: 'POST' });
       if (resp.ok) {
-        triggerModel(cardId);
+        fetchCardDetails(cardId);
       }
     }
   }
@@ -370,14 +403,7 @@ async function showCard(event) {
 }
 
 
-async function triggerModel(cardId) {
-  const checklist = document.getElementById("card-modal");
 
-  // remove the card div
-  const parent = checklist.parentElement;
-  parent.removeChild(checklist);
-  fetchCardDetails(cardId);
-}
 
 async function deleteChecklist(event) {
   if (event.target.innerText === 'Delete Checklist') {
@@ -387,7 +413,7 @@ async function deleteChecklist(event) {
 
     const resp = await fetch(deleteChecklistUrl, { method: 'DELETE' });
     if (resp.ok) {
-      triggerModel(cardId);
+      fetchCardDetails(cardId);
     }
   }
 }
@@ -411,6 +437,7 @@ window.onclick = function (event) {
     parent.removeChild(checklist);
   }
 }
+
 
 getListsAndCards();
 
